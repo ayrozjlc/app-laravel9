@@ -2,10 +2,13 @@
 
 namespace App\Utilities\Enums;
 
+use App\Utilities\Traits\EnumList;
 use Exception;
 
 enum Enviroments
 {
+    use EnumList;
+
     case local;
     case develop;
     case prod;
@@ -15,7 +18,7 @@ enum Enviroments
     {
         $env = (isset($args['env']) && !empty($args['env'])) ? $args['env'] : self::local->name;
         $min = $this->minEnv($env);
-        $list = $this->listEnv();
+        $list = $this->list();
         if (in_array($min, $list)) {
             $args['env'] = $min;
         } else {
@@ -28,18 +31,6 @@ enum Enviroments
     public function minEnv($text)
     {
         return mb_convert_case($text, MB_CASE_LOWER);
-    }
-
-    public function listEnv()
-    {
-        $list = [];
-        $names = self::cases();
-
-        foreach ($names as $n) {
-            $list[] = $n->name;
-        }
-
-        return $list;
     }
 
     public function noDev($env)
